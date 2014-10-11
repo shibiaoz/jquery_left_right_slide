@@ -1,0 +1,54 @@
+/*轮播组件start*/
+.broad_wrap{ 
+	position: relative;
+	float: left;
+	width: 592px;
+	height: 290px;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-left: 10px;
+}
+ul.broad_ul{
+	width: 592px;
+	height: 290px;
+	 position: absolute;
+	 font-size: 0;
+}
+ul.broad_ul li,.dot_wrap li{	
+	display: inline-block;
+	cursor: pointer;
+}
+ul.broad_ul li{
+	display:inline-block;
+	 _zoom:1;
+	 *display:inline;
+}
+.broad_li_item{
+	width: 592px;
+	height: 290px;
+}
+.broad_li_item img{
+	width: 592px;
+	height: 290px;
+}
+.broad_li_item a{
+	 display: block;
+}
+.dot_wrap{
+	width: 140px;
+	height: 25px;
+	position: absolute;
+	bottom: 5px;
+	right: 128px;
+}
+.dot_item{
+	width: 20px;
+	height: 15px;
+	text-align: center;
+	background: url(http://tb1.bdstatic.com/tb/zt/baiduweishibei/lunbo_dot_24.png) 0px 0px no-repeat;
+	*float: left;
+}
+.dot_item_active{
+	background: url(http://tb1.bdstatic.com/tb/zt/baiduweishibei/lunbo_dot_24.png) -21px 0px no-repeat;
+}
+/*轮播组件end*/

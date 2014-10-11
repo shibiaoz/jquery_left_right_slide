@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>v1.0 jquery slide</title>
+	<link rel="stylesheet" type="text/css" href="reset.css">
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+	<style type="text/css">
+		/*css  tools*/
+		.clear{clear: both;}
+		.clear:after,.clear:before{
+			content: ".";
+			height: 0;
+			visibility: hidden;
+			display: block;
+		}
+		/*slide components style*/
+		.carousel_wraper{
+			width: 256px;
+			padding: 10px;
+			border: solid 1px gray;
+			margin: 40px auto;
+		}
+		/*slide wraper,to config the slide width and height*/
+		.slide_wraper{
+			width: 256px;
+			height: 192px;
+			border: solid 1px gray;
+			overflow: hidden;
+			position: relative;
+		}
+		/*the ul width to set bigger than the sum of all slide pcitures*/
+		.slide_wraper ul{
+			width: 2000px;
+			position: absolute;
+		}
+		.slide_wraper li,.circle_wraper li{
+			float: left;
+		}
+		.circle_wraper li{
+			width: 20px;
+			height: 20px;
+			margin-right: 10px;
+			border-radius: 10px;
+			background: yellow;
+			text-align: center;
+			cursor: pointer;
+		}
+		.circle_wraper .active{
+			background: red;
+		}
+		.slide_wraper img{
+			width: 256px;
+		}
+	</style>
+</head>
+<body>
+	<div class="carousel_wraper">
+		<div class="j_slide_wraper slide_wraper">
+			<ul>
+				<li><img src="images/01.jpg"></li>
+				<li><img src="images/02.jpg"></li>
+				<li><img src="images/03.jpg"></li>
+				<li><img src="images/04.jpg"></li>
+				<li><img src="images/05.jpg"></li>
+			</ul>
+		</div>
+		<div class="prev_next_wraper"></div>
+		<div class="circle_wraper">
+			<ul>
+				<li class="active">1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+		</div>
+	</div>	
+	<script type="text/javascript">
+		function Slide () {
+			this.initial();
+		}
+		Slide.prototype = {
+			initial	:function(){
+				this.time = null;
+				this.index = 0;
+				this.len = 1;
+				this.$slide = null;
+				this.$ul = null;
+				this.$circleWraper = null; 
+				this.width = 0;
+				this.timeNum = 2000;
+				this.preSlide();
+			},
+			preSlide:function(){
+				var self = this;
+				var $slide = $('.j_slide_wraper');
+				$ul = $slide.find('ul');
+				var $lis = $slide.find('ul li');
+				var len = $lis.size();
+				self.len = len;
+				$ul.append($lis.eq(0).clone());//最后位置追加一个和第一个一样的，为了无缝切换
+				self.width =  $lis.eq(0).width();
+				self.$slide = $slide;
+				self.$ul = $ul;
+				self.$circleWraper = $('.circle_wraper');
+				self.start();
+				self.clickSlide();
+			},
+			//start to play
+			start:function(){
+				var self = this;
+				var $slide = self.$slide;
+				var $ul = self.$ul;
+				var index = self.index;
+				var len = self.len;
+				//set interval to slide
+				self.time = setInterval(function() {
+					var index = self.index;
+					self.slide($ul,index,len);
+				}, 2000);
+			},
+			//clear the interval timer and stop the animate
+			stop:function(){
+				var self = this;
+				var $slide = self.$slide;
+				var $ul = self.$ul;
+				clearInterval(self.time);
+				$ul.stop();
+			},
+			//if not animated then to play and set the circel
+			slide:function($ul,index,len){
+				var self = this;
+				if($ul.is(":animated")){
+					// is animated
+					return;
+				}
+				self.circleSlide();
+				self.play($ul,index,len);
+			},
+			//set the wraper left to slide and set animate
+			play:function($ul,index,len){
+				var self = this;
+				$ul.animate({
+					left:-(index*256)
+				},1000,function(){
+					if(self.index>5){
+						self.index=0;
+						$ul.css('left',0);
+					}
+				});
+			},
+			//set circle index and remveClass Or addClass
+			circleSlide:function(){
+				var self = this;
+				var index = self.index;
+				if(self.index==5){
+					index = 0;
+				}
+				self.$circleWraper.find('li').eq(index).addClass('active').siblings().removeClass('active');
+				self.index++;
+			},
+			//click to set certain slide picture ,stop the slide ,slide to certain slide pic,then to start
+			clickSlide:function(){
+				var self = this;
+				var $ul = self.$ul;
+				var len = self.len;
+				self.$circleWraper.on('click','li',function(){
+					var index = $(this).index();
+					if(index>=5){
+						index = 0;
+					}
+					self.index = index;
+					self.stop();
+					self.slide($ul,index,len);//点击应该立即切换，而不是在定时执行 before start
+					self.start();
+				});
+			}
+		}
+		new Slide();// runing 
+	</script>
+</body>
+</html>
